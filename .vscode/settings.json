@@ -1,5 +1,13 @@
 {
     "workbench.colorCustomizations": {
-        "tab.unfocusedActiveBorder": "#fff0"
-    }
+        "tab.unfocusedActiveBorder": "#fff0",
+        "editor.lineHighlightBackground": "#01fa92a6"
+    },
+    "editor.tokenColorCustomizations": {
+        "comments": "#e68799"
+    },
+    "editor.cursorStyle": "block",
+    "editor.renderLineHighlight": "gutter",
+    "workbench.editor.highlightModifiedTabs": true
 }
+    
