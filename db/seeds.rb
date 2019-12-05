@@ -8,7 +8,7 @@ end
 puts "Dog Walkin' Users now created!"
 
 puts "Currently makin' some cute asf seed puppies."
-100.times do
+30.times do
     #oldest living dog? Bluey, 29 years.
   Dog.create(name: Faker::Name.name, age: Faker::Number.between(from: 1, to: 29), owner_name: Faker::Name.name)
 end
