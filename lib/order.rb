@@ -1,4 +1,4 @@
-class order < ActiveRecord::Base
+class Order < ActiveRecord::Base
     belongs_to :dog
     belongs_to :user
 end 

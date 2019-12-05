@@ -1,4 +1,4 @@
 class Dog < ActiveRecord::Base
-    has_many :order
-    has_many :user, through: :order
+    has_many :orders
+    has_many :users, through: :orders
 end 
