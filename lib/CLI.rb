@@ -42,8 +42,9 @@ class CommandLineInterface
         puts "========\n=======\nENTER USERNAME BELOW:"
         input_username = gets.chomp.downcase
         password_input = prompt.mask("\nENTER PASSWORD BELOW:")
-        checkuser = find_user(input_username).password
-        until checkuser == password_input
+        checkpass = find_user(input_username).password
+        checkname = find_user(input_username).username
+        until checkpass == password_input && checkname === input_username
             32.times do 
                 puts "|||||||||||||"
             end 
@@ -60,18 +61,19 @@ class CommandLineInterface
         32.times do 
             puts "|||||||||||||"
         end 
-        prompt.select("Welcome back #{@currentuser.name.split.first}!\nROVER(ish)") do |menu|
-        puts "What would you like to do?"
+        puts "Welcome back #{@currentuser.name.split.first}!\nROVER(ish)"
+        prompt.select("What would you like to do?") do |menu|
             menu.choice 'Walk a Dog', -> {walk_order}
             menu.choice 'View My Balance', -> {user_balance}
-            menu.choice 'View My Past Orders', -> {past_walks}
+            menu.choice 'View My Last Order', -> {past_walks}
+            menu.choice 'DELETE ACCOUNT', -> {confirm_delete}
             menu.choice 'EXIT', -> {exit_app}
             #acc settings does change pass, name and delete account
         end
     end 
 
     def exit_app
-        4.times do 
+        30.times do 
             puts "|||||||||||||"
         end 
         puts "Thanks For using Rover(ish)!\nBark Bark!"
@@ -162,9 +164,9 @@ class CommandLineInterface
         if @currentuser.balance > 5
             cnfrm_wdraw = @currentuser.update!(balance: 0)
             puts "========="
-            puts "NOW TRANSFERING:#{fee} TO CONNECTED BANK."
+            puts "NOW TRANSFERING:$#{fee} TO CONNECTED BANK."
             cnfrm_wdraw
-            puts "YOUR ACCOUNT BALANCE IS NOW: $#{@currentuser.balance}\n Returning to Home Page."
+            puts "YOUR ACCOUNT BALANCE IS NOW: $#{@currentuser.balance}"
             puts "========="
             prompt.select("What would you like do to next?") do |menu|
                 menu.choice 'LOG OUT', -> {exit_app}
@@ -184,14 +186,17 @@ class CommandLineInterface
 
     def past_walks
         prompt = TTY::Prompt.new
+        dogname = @currentuser.orders.last.dog.name
+        earnings = @currentuser.orders.last.earnings
+        totalorders = @currentuser.orders.count
         32.times do 
             puts "|||||||||||||"
         end 
-        puts "HERE ARE ALL FOUND ORDERS:"
-        puts "Orders are created when you walk dogs!"
-        orders = Order.where(:user_id => @currentuser.id)
-        orders
-        puts "=================="
+        puts "See what dog you walked with on your last order!"
+        puts "==================="
+        puts "On your last order, you:"
+        puts "Walked #{dogname}, and made $#{earnings}."
+        puts "You have completed #{totalorders} walk(s) in your time working with us!"
         prompt.select("What would you like do to next?") do |menu|
             menu.choice 'LOG OUT', -> {exit_app}
             menu.choice 'RETURN HOME', -> {home}
