@@ -3,7 +3,7 @@
 
 puts "Currently Creating seed Users"
 15.times do
-  User.create(name: Faker::Name.name, age: Faker::Number.between(1, 100))
+  User.create(name: Faker::Name.name, age: Faker::Number.between(1, to: 100))
 end
 puts "Dog Walkin' Users now created!"
 

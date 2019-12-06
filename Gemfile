@@ -7,3 +7,7 @@ gem "pry"
 gem "require_all"
 gem "faker"
 gem 'activerecord', "~>5.2.3"
+gem 'tty-font'
+gem 'tty-prompt'
+gem 'tty-spinner'
+
