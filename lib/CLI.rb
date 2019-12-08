@@ -66,7 +66,7 @@ class CommandLineInterface
             menu.choice 'Walk a Dog', -> {walk_order}
             menu.choice 'View My Balance', -> {user_balance}
             menu.choice 'View My Last Order', -> {past_walks}
-            menu.choice 'DELETE ACCOUNT', -> {confirm_delete}
+            menu.choice 'Account Settings', -> {account_settings}
             menu.choice 'EXIT', -> {exit_app}
             #acc settings does change pass, name and delete account
         end
@@ -109,7 +109,7 @@ class CommandLineInterface
         puts "$14.00 Was added to your balance #{@currentuser.username}!"
         puts ("Your new current balance is: $#{@currentuser.balance}")
         prompt.select("What would you like to do next?") do |menu|
-            menu.choice 'Withdraw Balance', -> {greet}
+            menu.choice 'Withdraw Balance', -> {confirm_withdrawl}
             menu.choice 'RETURN HOME', -> {home}
         end
     end
@@ -186,29 +186,87 @@ class CommandLineInterface
 
     def past_walks
         prompt = TTY::Prompt.new
-        dogname = @currentuser.orders.last.dog.name
-        earnings = @currentuser.orders.last.earnings
         totalorders = @currentuser.orders.count
+        # allorders = @currentuser.orders
         32.times do 
             puts "|||||||||||||"
         end 
-        puts "See what dog you walked with on your last order!"
-        puts "==================="
-        puts "On your last order, you:"
-        puts "Walked #{dogname}, and made $#{earnings}."
-        puts "You have completed #{totalorders} walk(s) in your time working with us!"
+        if totalorders >= 1 
+            dogname = @currentuser.orders.last.dog.name
+            earnings = @currentuser.orders.last.earnings
+            puts "See what dog you walked with on your last order!"
+            puts "==================="
+            puts "On your last order, you:"
+            puts "Walked #{dogname}, and made $#{earnings}."  
+            puts "You have completed #{totalorders} walk(s) in your time working with us!"
+        else
+            puts "========================================"
+            puts "YOU HAVE NOT COMPLETED ANY ORDERS YET."
+            puts "Walk some pups to create new orders!"
+            puts "========================================"
+        end 
         prompt.select("What would you like do to next?") do |menu|
             menu.choice 'LOG OUT', -> {exit_app}
             menu.choice 'RETURN HOME', -> {home}
         end 
     end 
+    # allorders.each do |order| 
+    #     puts "Walked #{order.dog.name}, and made $#{order.earnings}."  
+    #   end 
 
-     # def change_password
-    #     #USER CAN CHANGE PASSWORD
-    # end 
+    def change_password
+        #USER CAN CHANGE PASSWORD
+        prompt = TTY::Prompt.new
+        puts "Hello #{@currentuser.username},"
+        currentpass = prompt.mask("Please enter your current password now:")
+        until currentpass == @currentuser.password
+            puts "========================================"
+            puts "PASSWORD IS NOT CORRECT. TRY AGAIN"
+            puts "========================================"
+        end 
+        password1 = prompt.mask("Please enter your preferred password now:")
+        password2 = prompt.mask("Please password enter again:")
+        until password1 = password2
+            puts "========================================"
+            puts "PASSWORD IS NOT CORRECT. TRY AGAIN"
+            puts "========================================"
+        end 
+        @currentuser.update!(password: password1)
+        if @currentuser.password == password1
+            puts "========================================"
+            puts "PASSWORD CHANGE SUCCESSFUL"
+            puts "========================================"
+        else 
+            puts "========================================"
+            puts "PASSWORD CHANGE FAILED"
+            puts "========================================"
+        end 
+        home
+    end 
 
-    # def account_settings
-    # end 
+    def account_settings
+        prompt = TTY::Prompt.new
+        2.times do 
+            puts "==========================="
+        end 
+        prompt.select("ACCOUNT SETTINGS\nWhat would you like to do?") do |menu|
+            menu.choice 'CHANGE NAME', -> {new_name}
+            menu.choice 'CHANGE PASSWORD', -> {change_password}
+            menu.choice 'DELETE ACCOUNT', -> {confirm_delete}
+            menu.choice 'RETURN HOME', -> {home}
+        end 
+    end 
+
+    def new_name
+        puts "Hello #{@currentuser.username}." 
+        puts "The current name we have for you is: #{@currentuser.name}.\nWhat would you like your new name to be?"
+        newname = gets.chomp
+        @currentuser.update!(name: newname)
+        puts "===\n===\n===\n"
+        puts "Got it! Cool Name #{@currentuser.name}!"
+        puts "========"
+        account_settings
+    end 
 
     def create_account
         prompt = TTY::Prompt.new
@@ -219,7 +277,7 @@ class CommandLineInterface
         puts "Please enter your full name now:"
         user_name = gets.chomp
         first_name = user_name.split.first
-        puts "Thank You #{first_name}, please enter your birthdate now:"
+        puts "Thank You #{first_name}, please enter your age now:"
         user_age = gets.chomp
         #DATETIME HERE
         puts "Got it #{first_name},\nPlease enter your preffered username now:"
